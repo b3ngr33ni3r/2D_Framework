@@ -3,7 +3,6 @@ package drawing;
 //Uses exit -100 scale, 100,101,102,etc
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -16,35 +15,34 @@ public class RenderLoop extends Thread implements util.ThreadMethods {
 		objects = new ConcurrentLinkedQueue<drawing.Drawing>();
 		requireShutdown=false;
 	}
-	
+
 	public void run() {
+		System.out.println(this.getName() +" is up.");
+
 		try {
 			Display.setDisplayMode(new DisplayMode(800,600));
 			Display.create();
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-			System.exit(-100);
-		}
 
-		// init OpenGL here 
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0, 800, 0, 600, 1, -1);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-		//the following is configured for the GL_TYPES for a solid color per obj only. no textures/gradients/etc
-		while (!Display.isCloseRequested()) {
-			
-			// render OpenGL here
-			// Clear the screen and depth buffer
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);	
+			// init OpenGL here 
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glLoadIdentity();
+			GL11.glOrtho(0, 800, 0, 600, 1, -1);
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+			//the following is configured for the GL_TYPES for a solid color per obj only. no textures/gradients/etc
+			while (!Display.isCloseRequested()) {
+
+				// render OpenGL here
+				// Clear the screen and depth buffer
+				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);	
 
 
 
-			//draw all objects
-			for (Drawing obj : objects)
-			{
-				
+				//draw all objects
+				for (Drawing obj : objects)
+				{
+
 
 					// set the color of the shape (R,G,B,A)
 					GL11.glColor4f(obj.color().r(),obj.color().g(),obj.color().b(),obj.color().a());
@@ -83,17 +81,22 @@ public class RenderLoop extends Thread implements util.ThreadMethods {
 
 				}    
 
-			
 
-		
-			Display.update();
-			
-			if (requireShutdown)
-			{
-				Display.destroy();
-				return;
+
+
+				Display.update();
+
+				if (requireShutdown)
+				{
+					Display.destroy();
+					return;
+				}
 			}
-			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-100);
+
+
 		}
 
 		Display.destroy();
@@ -104,7 +107,7 @@ public class RenderLoop extends Thread implements util.ThreadMethods {
 	{
 		objects.add(obj);
 	}
-	
+
 	public boolean unregister(drawing.Drawing obj)
 	{
 		return objects.remove(obj);

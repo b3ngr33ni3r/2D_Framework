@@ -34,7 +34,7 @@ public class Main {
 	
 	public static void main(String[] args)
 	{
-		//define the main instance, and instantiate it, creating object
+		//define the main instance, and instantiate it, creating object stuff
 			Main main = new Main(){
 				@Override
 				public void instantiate()
@@ -47,26 +47,11 @@ public class Main {
 					getRenderLoop().setName("Core Main RenderLoop");
 					getEventLoop().setName("Core Main EventLoop");
 					
-					getObjectsList().add(new core.Character(new util.Vertex(20,20),20));
-					//this allows KEY_ESCAPE to quit the game [a non visual object]
-					getObjectsList().add(new GameObject(){
+					getEventLoop().register(new input.UI(){
 						@Override
 						public void instantiate()
 						{
-							this.GL_TYPE=drawing.GL_TYPES.NOTHING;
-							this.setEvent(new input.Event(){
-
-								@Override
-								public void mouse() {
-									// TODO Auto-generated method stub
-									
-								}
-
-								@Override
-								public void other() {
-									// TODO Auto-generated method stub
-									
-								}
+							setEvent(new input.Event(){
 
 								@Override
 								public void preKeys() {
@@ -91,25 +76,29 @@ public class Main {
 									// TODO Auto-generated method stub
 									if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
 									{
-										core.Main.mainPtr.getEventLoop().requestShutdown();
-										core.Main.mainPtr.getRenderLoop().requestShutdown();
+										System.out.println("Requesting teardown now...");
+										core.Main.mainPtr.eventLoop.requestShutdown();
+										core.Main.mainPtr.renderLoop.requestShutdown();
 									}
-										
+								}
+
+								@Override
+								public void mouse() {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void other() {
+									// TODO Auto-generated method stub
+									
 								}});
 						}
 					});
 					
-					
-					//Messy way to start the threads : 
 					getRenderLoop().start();
 					
-					boolean trash=true;
-					while(trash)
-						if (getRenderLoop().isUpSuccessfully())
-							{
-								getEventLoop().start();
-								trash=false;
-							}
+					getEventLoop().start();
 					
 					
 				}

@@ -37,6 +37,13 @@ public class EventLoop extends Thread implements util.ThreadMethods {
 	
 	public void run()
 	{
+		System.out.println(this.getName() +" is up.");
+		while(!Keyboard.isCreated())
+		{
+			
+		}
+		
+		try{
 		
 		while(true)
 		{
@@ -86,6 +93,11 @@ public class EventLoop extends Thread implements util.ThreadMethods {
 			{
 				return;
 			}
+		}
+		}
+		catch (Exception e)
+		{
+			return;
 		}
 	}
 
